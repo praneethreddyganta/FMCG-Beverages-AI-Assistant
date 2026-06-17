@@ -56,3 +56,50 @@ node server.js
 npx vite
 ```
 Open `http://localhost:3000` in your web browser.
+
+## System & Model Architecture
+
+The application uses an **Agentic NL-to-SQL Translation Loop** to query the database. The logic consists of two generative phases mediated by the backend server:
+
+```mermaid
+graph TD
+    User([Business User]) -->|1. Conversational Query| Backend[Express Backend Server]
+    Backend -->|2. Inject DB Schema + Prompt| GeminiSQL[Gemini 1.5 Flash - SQL Generator]
+    GeminiSQL -->|3. Output JSON with SQL Query| Backend
+    Backend -->|4. Strict 'SELECT' Check & Run| SQLite[(SQLite3 Database)]
+    SQLite -->|5. Tabular Data Results| Backend
+    Backend -->|6. Compile Data + Summary Prompt| GeminiText[Gemini 1.5 Flash - Narrative Agent]
+    GeminiText -->|7. Markdown Insight Text| Backend
+    Backend -->|8. Renders markdown, table grid, & bar chart| User
+```
+
+### 1. SQL Generation Phase
+- The user query is packaged into a structured prompt containing the full database schema.
+- **Strict Prompt Guidelines** instruct Gemini to only return a SELECT statement wrapped in a parseable JSON object:
+  ```json
+  {
+    "sql": "SELECT ...",
+    "explanation": "Brief query justification"
+  }
+  ```
+- The backend parses this JSON and validates that the SQL query is a read-only `SELECT` statement before executing it against `fmcg_beverages.db`.
+
+### 2. Business Narrative Phase
+- The raw results returned by SQLite are passed back to Gemini with a separate formatting instruction.
+- The model translates tabular cells into a concise, non-technical business report formatted in Markdown, highlighting key drivers (promotional lifts, inventory alerts).
+- The React frontend parses the numeric cells to automatically draw visual charts side-by-side.
+
+---
+
+## Deployment on Render (Recommended)
+
+Since the application requires a persistent Node.js background process to run the Express API server and execute write-independent local SQLite files, **Render** is much more suitable than Vercel. 
+*(Vercel is serverless-based; its serverless functions are ephemeral, read-only, and will lose connections or reset local SQLite database changes).*
+
+We have included a `render.yaml` blueprint. To deploy the app to Render:
+1. Log in to your **Render Dashboard**.
+2. Click **New** $\rightarrow$ **Blueprint**.
+3. Select your repository `FMCG-Beverages-AI-Assistant`.
+4. Render will automatically build the React frontend, generate the SQLite database via Python, and run the backend.
+5. In the Render environment settings, configure the environment variable:
+   * `GEMINI_API_KEY`: *your_gemini_api_key*
