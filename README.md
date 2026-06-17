@@ -59,35 +59,58 @@ Open `http://localhost:3000` in your web browser.
 
 ## System & Model Architecture
 
-The application uses an **Agentic NL-to-SQL Translation Loop** to query the database. The logic consists of two generative phases mediated by the backend server:
+The application implements an **Agentic NL-to-SQL Orchestration Loop** to query the database. Below is the detailed system diagram and step-by-step pipeline description:
 
 ```mermaid
 graph TD
     User([Business User]) -->|1. Conversational Query| Backend[Express Backend Server]
-    Backend -->|2. Inject DB Schema + Prompt| GeminiSQL[Gemini 1.5 Flash - SQL Generator]
+    Backend -->|2. Inject DB Schema + Guidelines| GeminiSQL[Gemini 1.5 Flash - SQL Generator]
     GeminiSQL -->|3. Output JSON with SQL Query| Backend
-    Backend -->|4. Strict 'SELECT' Check & Run| SQLite[(SQLite3 Database)]
+    Backend -->|4. Safe 'SELECT' Check & Run| SQLite[(SQLite3 Database)]
     SQLite -->|5. Tabular Data Results| Backend
     Backend -->|6. Compile Data + Summary Prompt| GeminiText[Gemini 1.5 Flash - Narrative Agent]
     GeminiText -->|7. Markdown Insight Text| Backend
     Backend -->|8. Renders markdown, table grid, & bar chart| User
 ```
 
-### 1. SQL Generation Phase
-- The user query is packaged into a structured prompt containing the full database schema.
-- **Strict Prompt Guidelines** instruct Gemini to only return a SELECT statement wrapped in a parseable JSON object:
-  ```json
-  {
-    "sql": "SELECT ...",
-    "explanation": "Brief query justification"
-  }
-  ```
-- The backend parses this JSON and validates that the SQL query is a read-only `SELECT` statement before executing it against `fmcg_beverages.db`.
+### 1. Database Schema & Relational Design
+The data pipeline structures beverage operations across four relational tables:
+*   **`product_master` (Dimension Table)**: Resolves `product_id` to human-readable attributes (brand, sub-category, pack size, standard unit retail price).
+*   **`store_master` (Dimension Table)**: Resolves `store_id` to geographical attributes (city, region, store format supermarket/convenience).
+*   **`sales_promotions` (Fact Table)**: Tracks weekly product-store transactions. Links to dimensions using `product_id` and `store_id`. Contains continuous metrics (`units_sold`, `revenue`) and promotion details (`discount_pct`, `promotion_type`).
+*   **`inventory` (Fact Table)**: Captures weekly stock levels. Models inventory movement: `closing_stock = (opening_stock + units_received) - units_sold`. Tracks `stockout_flag` (1 if stock hit zero).
 
-### 2. Business Narrative Phase
-- The raw results returned by SQLite are passed back to Gemini with a separate formatting instruction.
-- The model translates tabular cells into a concise, non-technical business report formatted in Markdown, highlighting key drivers (promotional lifts, inventory alerts).
-- The React frontend parses the numeric cells to automatically draw visual charts side-by-side.
+---
+
+### 2. Execution Pipeline
+
+#### Phase A: Natural Language to SQL Translation
+When a user submits a question, the backend server constructs a prompt containing:
+1. The full DDL schema statements representing all 4 tables.
+2. Direct system rules instructing the model to translate the query into a single valid SQLite statement.
+3. Strict instructions to format the output as a raw JSON payload (no Markdown enclosing):
+   ```json
+   {
+     "sql": "SELECT ...",
+     "explanation": "Brief reasoning explaining how this query answers the request"
+   }
+   ```
+
+#### Phase B: Safety Check & Query Execution
+Before running the SQL against the local `fmcg_beverages.db` database:
+- The backend parses the JSON payload.
+- It runs a safety gate ensuring the statement strictly starts with the read-only command `SELECT`.
+- It blocks dangerous keywords (like `DROP`, `DELETE`, `INSERT`, `UPDATE`, `ALTER`, `CREATE`) to prevent SQL injection.
+- If the statement is valid, it runs via `sqlite3` and gets raw tabular records.
+
+#### Phase C: Business Narrative Generation
+The server feeds the original question, the generated SQL, and the raw query results back to Gemini. The model writes a concise business summary in Markdown, highlighting key drivers (promotional lifts, stockout rates, etc.) without using technical database jargon.
+
+#### Phase D: Dynamic Visualizations
+The React client inspects the database rows. If a numeric value (e.g., `revenue`, `units_sold`) and a text label are found:
+- It computes the maximum value in the dataset.
+- It dynamically builds horizontal bar charts using pure CSS styling, showing comparisons directly inside the chat log.
+- Toggles allow the user to view the raw datagrid and inspect the generated SQL for maximum auditability.
 
 ---
 
