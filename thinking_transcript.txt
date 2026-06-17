@@ -1,0 +1,9 @@
+Developer: "We need to build a natural language interface for FMCG beverage analytics. What is the best database schema?"
+AI assistant: "A standard dimensional model works best here:
+- store_master (store_id, store_name, region, city, store_format)
+- product_master (product_id, product_name, brand, category, sub_category, pack_size_ml, unit_price)
+- sales_promotions (week_start_date, product_id, store_id, units_sold, revenue, promotion_flag, promotion_type, discount_pct)
+- inventory (week_start_date, product_id, store_id, opening_stock, units_received, units_sold, closing_stock, stockout_flag)"
+
+Developer: "How do we ensure Gemini does not execute harmful SQL commands?"
+AI assistant: "We will restrict execution on the backend: only execute queries starting with 'SELECT'. We will instruct the LLM specifically to only write 'SELECT' queries and enforce JSON validation before execution."

@@ -1,0 +1,16 @@
+product_id,product_name,brand,category,sub_category,pack_size_ml,unit_price
+BEV-001,Fizz Cola 500ml,Fizz,Carbonated,Cola,500,1.5
+BEV-002,Fizz Orange 500ml,Fizz,Carbonated,Fruit Flavoured,500,1.5
+BEV-003,Fizz Cola Zero 500ml,Fizz,Carbonated,Cola,500,1.6
+BEV-004,Pure Orange Juice 1L,PureLife,Juice,Fruit Juice,1000,3.5
+BEV-005,Pure Apple Juice 1L,PureLife,Juice,Fruit Juice,1000,3.5
+BEV-006,Pure Mango Blend 1L,PureLife,Juice,Fruit Juice,1000,3.8
+BEV-007,Spark Lemon Sparkling 500ml,Spark,Water,Sparkling Water,500,1.2
+BEV-008,Spark Lime Sparkling 500ml,Spark,Water,Sparkling Water,500,1.2
+BEV-009,Alpine Spring Water 1.5L,Alpine,Water,Still Water,1500,1.0
+BEV-010,Alpine Spring Water 500ml,Alpine,Water,Still Water,500,0.6
+BEV-011,Volt Energy Original 250ml,Volt,Energy,Energy Drink,250,2.2
+BEV-012,Volt Energy Sugarfree 250ml,Volt,Energy,Energy Drink,250,2.2
+BEV-013,Volt Energy Blue Ice 250ml,Volt,Energy,Energy Drink,250,2.4
+BEV-014,Moo Chocolate Milk 250ml,Moo,Dairy,Flavoured Milk,250,1.8
+BEV-015,Moo Strawberry Milk 250ml,Moo,Dairy,Flavoured Milk,250,1.8
