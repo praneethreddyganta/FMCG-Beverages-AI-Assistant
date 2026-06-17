@@ -3,9 +3,10 @@ services:
     name: fmcg-beverages-ai-assistant
     env: node
     plan: free
-    buildCommand: npm install && npm run build && python3 generate_data.py
+    buildCommand: npm install && npm run build && node generate_data.js
     startCommand: npm start
     envVars:
       - key: GEMINI_API_KEY
+        value: "PASTE_YOUR_GEMINI_API_KEY_HERE"
       - key: PORT
-        value: 5001
+        value: "5001"
