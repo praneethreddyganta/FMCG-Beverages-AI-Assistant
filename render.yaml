@@ -7,6 +7,5 @@ services:
     startCommand: npm start
     envVars:
       - key: GEMINI_API_KEY
-        sync: false
       - key: PORT
         value: 5001
