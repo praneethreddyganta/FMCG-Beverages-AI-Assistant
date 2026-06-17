@@ -6,6 +6,13 @@ node_modules/
 .env.local
 .env.*.local
 
+# Build output
+dist/
+
+# Generated database & sample data
+*.db
+*_sample.csv
+
 # Logs
 *.log
 npm-debug.log*
@@ -15,3 +22,6 @@ yarn-error.log*
 # System Files
 .DS_Store
 Thumbs.db
+
+# Presentation binary
+FMCG_Beverages_AI_Assistant_Presentation.pdf
