@@ -1,5 +1,7 @@
 # FMCG Beverages AI Assistant
 
+> **🚀 Live Demo:** [https://fmcg-beverages-ai-assistant.onrender.com](https://fmcg-beverages-ai-assistant.onrender.com)
+
 An end-to-end, conversational Business Intelligence (BI) assistant built for FMCG category management. It enables non-technical business users (Brand Managers, Sales Directors) to query sales performance, inventory movements, and promotional campaign lifts conversationally.
 
 The system translates natural language queries into valid SQLite statements, executes them against a simulated 16-week, 7,680-record beverage division database, and displays structured datagrids, auto-generated charts, and narrative business insights.
@@ -121,8 +123,13 @@ Since the application requires a persistent Node.js background process to run th
 
 We have included a `render.yaml` blueprint. To deploy the app to Render:
 1. Log in to your **Render Dashboard**.
-2. Click **New** $\rightarrow$ **Blueprint**.
+2. Click **New** → **Blueprint**.
 3. Select your repository `FMCG-Beverages-AI-Assistant`.
 4. Render will automatically build the React frontend, generate the SQLite database via Python, and run the backend.
 5. In the Render environment settings, configure the environment variable:
    * `GEMINI_API_KEY`: *your_gemini_api_key*
+
+### Live Deployment
+
+🌐 **Production URL:** [https://fmcg-beverages-ai-assistant.onrender.com](https://fmcg-beverages-ai-assistant.onrender.com)
+
