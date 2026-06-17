@@ -2,12 +2,14 @@
   "name": "fmcg-beverages-ai-assistant",
   "version": "1.0.0",
   "description": "FMCG Beverages AI Assistant for Database Querying",
-  "main": "server.js",
+  "main": "server/index.js",
   "type": "module",
   "scripts": {
-    "start": "node server.js",
+    "start": "node server/index.js",
     "dev": "vite",
-    "build": "vite build"
+    "build": "vite build",
+    "generate": "node scripts/generate_data.js",
+    "setup": "npm install && node scripts/generate_data.js"
   },
   "dependencies": {
     "@google/generative-ai": "^0.11.4",

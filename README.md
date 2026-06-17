@@ -1,135 +1,312 @@
-# FMCG Beverages AI Assistant
+# 🥤 FMCG Beverages AI Assistant
 
 > **🚀 Live Demo:** [https://fmcg-beverages-ai-assistant.onrender.com](https://fmcg-beverages-ai-assistant.onrender.com)
 
-An end-to-end, conversational Business Intelligence (BI) assistant built for FMCG category management. It enables non-technical business users (Brand Managers, Sales Directors) to query sales performance, inventory movements, and promotional campaign lifts conversationally.
+A conversational Business Intelligence (BI) assistant for FMCG category management. It enables non-technical business users — Brand Managers, Sales Directors, and Category Analysts — to query sales performance, inventory movements, and promotional campaign lifts using plain English.
 
-The system translates natural language queries into valid SQLite statements, executes them against a simulated 16-week, 7,680-record beverage division database, and displays structured datagrids, auto-generated charts, and narrative business insights.
-
-## Features
-
-- **Category Dashboard**: High-level visual KPIs (total revenue, units sold, discount rate, stockout rate) and interactive horizontal bar charts tracking revenue contribution by region, category, and top products.
-- **Conversational SQL Chat**: Ask analytical questions (e.g., *"Compare BOGO sales of Pure Orange Juice across convenience stores in West vs East"*).
-  - **SQL Code Toggle**: Clear visibility of the executed SQL query for auditability.
-  - **Data Spreadsheet**: Scrollable table preview of the direct database records.
-  - **Automatic Charting**: Dynamically draws horizontal comparison charts from query outputs if they contain numeric data.
-- **Database Explorer**: Direct tab/page interface to inspect raw schemas and tables (`product_master`, `store_master`, `sales_promotions`, `inventory`).
-
-## Technology Stack
-
-- **Frontend**: React (Vite) + CSS Variables (Glassmorphic dark aesthetic)
-- **Backend**: Node.js Express API Server
-- **Database**: SQLite3
-- **LLM API**: Google Gemini 1.5 Flash (utilizing the official `@google/generative-ai` SDK)
+The system translates natural language queries into valid SQLite statements, executes them against a simulated **16-week, 7,680-record** beverage division database, and returns structured datagrids, auto-generated charts, and narrative business insights.
 
 ---
 
-## Getting Started
+## ✨ Key Features
 
-### 1. Prerequisites
-Ensure you have **Node.js** (v18+) and **Python 3** installed on your system.
+| Feature | Description |
+|---|---|
+| **Category Dashboard** | Real-time KPIs (revenue, units sold, discount rate, stockout rate) with interactive horizontal bar charts by region, category, and top products |
+| **Conversational SQL Chat** | Ask analytical questions in natural language (e.g., *"Compare BOGO sales of Pure Orange Juice across convenience stores in West vs East"*) |
+| **SQL Auditability** | Toggle to inspect the exact SQL query generated and executed by the AI |
+| **Data Spreadsheet** | Scrollable table preview of the raw database records returned by each query |
+| **Auto Charting** | Dynamically renders horizontal comparison charts when query results contain numeric data |
+| **Database Explorer** | Directly inspect raw schemas and all four tables (`product_master`, `store_master`, `sales_promotions`, `inventory`) |
 
-### 2. Installation
-Clone this repository and install the dependencies:
+---
+
+## 🏗️ Project Structure
+
+```
+FMCG-Beverages-AI-Assistant/
+│
+├── server/                    # ── Backend (Express API Server) ──
+│   └── index.js               #    REST API, Gemini integration, SQLite queries
+│
+├── src/                       # ── Frontend (React + Vite) ──
+│   ├── App.jsx                #    Main React application (Dashboard, Chat, Explorer)
+│   ├── main.jsx               #    React entry point
+│   └── styles/
+│       └── App.css            #    Global styles (glassmorphic dark theme, CSS variables)
+│
+├── scripts/                   # ── Data Pipeline ──
+│   └── generate_data.js       #    Generates SQLite DB with 7,680 simulated records + CSV exports
+│
+├── index.html                 #  Vite HTML entry point (loads Google Fonts + React)
+├── vite.config.js             #  Vite configuration (dev proxy to backend on port 5001)
+├── package.json               #  Node.js dependencies and npm scripts
+├── render.yaml                #  Render deployment blueprint
+├── .env.example               #  Environment variable template
+├── .env                       #  Your local environment variables (git-ignored)
+└── .gitignore                 #  Git ignore rules
+```
+
+### Generated at Runtime (git-ignored)
+```
+├── fmcg_beverages.db          #  SQLite database (created by `npm run generate`)
+├── *_sample.csv               #  Sample CSV exports (created by `npm run generate`)
+├── dist/                      #  Production build output (created by `npm run build`)
+└── node_modules/              #  Installed dependencies (created by `npm install`)
+```
+
+---
+
+## 🛠️ Technology Stack
+
+| Layer | Technology | Purpose |
+|---|---|---|
+| **Frontend** | React 18 + Vite 5 | Fast SPA with hot module replacement |
+| **Styling** | Vanilla CSS + CSS Variables | Glassmorphic dark theme with micro-animations |
+| **Typography** | Google Fonts (Inter, Outfit) | Premium, modern font pairing |
+| **Backend** | Node.js + Express 4 | REST API server with SQLite query execution |
+| **Database** | SQLite3 | Lightweight relational database (local file-based) |
+| **AI/LLM** | Google Gemini 1.5 Flash | NL-to-SQL translation + business narrative generation |
+| **Deployment** | Render | Persistent Node.js web service |
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- **Node.js** v18 or higher — [Download](https://nodejs.org/)
+- **npm** (bundled with Node.js)
+- **Google Gemini API Key** — [Get one free](https://aistudio.google.com/apikey)
+
+### Step 1: Clone the Repository
+
+```bash
+git clone https://github.com/praneethreddyganta/FMCG-Beverages-AI-Assistant.git
+cd FMCG-Beverages-AI-Assistant
+```
+
+### Step 2: Install Dependencies
+
 ```bash
 npm install
 ```
 
-### 3. Generate Database
-Populate the SQLite database and export sample CSV files:
+### Step 3: Configure Environment Variables
+
 ```bash
-python3 generate_data.py
+cp .env.example .env
 ```
 
-### 4. Configuration
-Create a `.env` file in the root directory:
+Open `.env` and paste your Gemini API key:
+
 ```env
-GEMINI_API_KEY=your_google_gemini_api_key_here
+GEMINI_API_KEY=your_actual_gemini_api_key_here
 PORT=5001
 ```
-*(Alternatively, you can paste your API key directly inside the settings panel in the frontend UI).*
 
-### 5. Running the Application
+> **💡 Tip:** You can also paste the API key directly in the frontend UI header — no restart required.
+
+### Step 4: Generate the Database
+
+This creates the SQLite database (`fmcg_beverages.db`) with 7,680 simulated beverage transaction records:
+
 ```bash
-# Start backend API (listening on port 5001)
-node server.js
-
-# In another terminal window, start Vite dev server (runs on port 3000)
-npx vite
+npm run generate
 ```
-Open `http://localhost:3000` in your web browser.
 
-## System & Model Architecture
+### Step 5: Run the Application
 
-The application implements an **Agentic NL-to-SQL Orchestration Loop** to query the database. Below is the detailed system diagram and step-by-step pipeline description:
+You need **two terminal windows** running simultaneously:
+
+**Terminal 1 — Start the Backend API Server:**
+```bash
+npm start
+```
+The Express server will start on `http://localhost:5001`.
+
+**Terminal 2 — Start the Frontend Dev Server:**
+```bash
+npm run dev
+```
+The Vite dev server will start on `http://localhost:3000`.
+
+### Step 6: Open in Browser
+
+Navigate to **[http://localhost:3000](http://localhost:3000)** and start querying!
+
+---
+
+## 🏛️ System Architecture
+
+The application implements an **Agentic NL-to-SQL Orchestration Loop** — a multi-phase pipeline that converts conversational queries into database results with AI-generated business narratives.
 
 ```mermaid
 graph TD
-    User([Business User]) -->|1. Conversational Query| Backend[Express Backend Server]
-    Backend -->|2. Inject DB Schema + Guidelines| GeminiSQL[Gemini 1.5 Flash - SQL Generator]
-    GeminiSQL -->|3. Output JSON with SQL Query| Backend
-    Backend -->|4. Safe 'SELECT' Check & Run| SQLite[(SQLite3 Database)]
-    SQLite -->|5. Tabular Data Results| Backend
-    Backend -->|6. Compile Data + Summary Prompt| GeminiText[Gemini 1.5 Flash - Narrative Agent]
-    GeminiText -->|7. Markdown Insight Text| Backend
-    Backend -->|8. Renders markdown, table grid, & bar chart| User
+    subgraph "CLIENT — React SPA"
+        A([Business User]) -->|"Natural language question"| B[React Frontend<br/>Dashboard · Chat · Explorer]
+    end
+
+    subgraph "SERVER — Express API"
+        B -->|"POST /api/chat"| C[Express Router]
+        C -->|"1. Inject DB schema<br/>+ system rules"| D["Gemini 1.5 Flash<br/>(SQL Generator Agent)"]
+        D -->|"2. Returns JSON<br/>{sql, explanation}"| E[SQL Safety Gate]
+        E -->|"3. Validates SELECT-only<br/>blocks DROP/DELETE/INSERT"| F[(SQLite3 Database)]
+        F -->|"4. Raw tabular results"| G["Gemini 1.5 Flash<br/>(Narrative Agent)"]
+        G -->|"5. Markdown business<br/>summary"| C
+    end
+
+    C -->|"6. {sql, data, answer}"| B
+    B -->|"Renders: Markdown + Table<br/>+ Auto Chart"| A
+
+    style A fill:#3b82f6,stroke:#2563eb,color:#fff
+    style D fill:#10b981,stroke:#059669,color:#fff
+    style G fill:#10b981,stroke:#059669,color:#fff
+    style F fill:#f59e0b,stroke:#d97706,color:#fff
 ```
 
-### 1. Database Schema & Relational Design
-The data pipeline structures beverage operations across four relational tables:
-*   **`product_master` (Dimension Table)**: Resolves `product_id` to human-readable attributes (brand, sub-category, pack size, standard unit retail price).
-*   **`store_master` (Dimension Table)**: Resolves `store_id` to geographical attributes (city, region, store format supermarket/convenience).
-*   **`sales_promotions` (Fact Table)**: Tracks weekly product-store transactions. Links to dimensions using `product_id` and `store_id`. Contains continuous metrics (`units_sold`, `revenue`) and promotion details (`discount_pct`, `promotion_type`).
-*   **`inventory` (Fact Table)**: Captures weekly stock levels. Models inventory movement: `closing_stock = (opening_stock + units_received) - units_sold`. Tracks `stockout_flag` (1 if stock hit zero).
+### Pipeline Phases
 
----
+#### Phase A: Natural Language → SQL Translation
+When a user submits a question, the backend constructs a prompt containing:
+1. The full DDL schema of all 4 tables
+2. System rules instructing the model to generate a single valid SQLite `SELECT` statement
+3. Strict formatting instructions to output raw JSON: `{"sql": "SELECT ...", "explanation": "..."}`
 
-### 2. Execution Pipeline
-
-#### Phase A: Natural Language to SQL Translation
-When a user submits a question, the backend server constructs a prompt containing:
-1. The full DDL schema statements representing all 4 tables.
-2. Direct system rules instructing the model to translate the query into a single valid SQLite statement.
-3. Strict instructions to format the output as a raw JSON payload (no Markdown enclosing):
-   ```json
-   {
-     "sql": "SELECT ...",
-     "explanation": "Brief reasoning explaining how this query answers the request"
-   }
-   ```
-
-#### Phase B: Safety Check & Query Execution
-Before running the SQL against the local `fmcg_beverages.db` database:
-- The backend parses the JSON payload.
-- It runs a safety gate ensuring the statement strictly starts with the read-only command `SELECT`.
-- It blocks dangerous keywords (like `DROP`, `DELETE`, `INSERT`, `UPDATE`, `ALTER`, `CREATE`) to prevent SQL injection.
-- If the statement is valid, it runs via `sqlite3` and gets raw tabular records.
+#### Phase B: SQL Safety Gate & Query Execution
+Before running any generated SQL:
+- The backend parses the JSON response from Gemini
+- Validates the statement begins with `SELECT` (read-only)
+- Blocks dangerous keywords (`DROP`, `DELETE`, `INSERT`, `UPDATE`, `ALTER`, `CREATE`)
+- Executes the validated query against the local SQLite database
 
 #### Phase C: Business Narrative Generation
-The server feeds the original question, the generated SQL, and the raw query results back to Gemini. The model writes a concise business summary in Markdown, highlighting key drivers (promotional lifts, stockout rates, etc.) without using technical database jargon.
+The server sends the original question, generated SQL, and raw query results back to Gemini. The model writes a concise business summary in Markdown — highlighting key drivers, promotional lifts, stockout rates — without technical database jargon.
 
 #### Phase D: Dynamic Visualizations
-The React client inspects the database rows. If a numeric value (e.g., `revenue`, `units_sold`) and a text label are found:
-- It computes the maximum value in the dataset.
-- It dynamically builds horizontal bar charts using pure CSS styling, showing comparisons directly inside the chat log.
-- Toggles allow the user to view the raw datagrid and inspect the generated SQL for maximum auditability.
+The React client inspects the returned data rows:
+- Detects numeric + text label column pairs
+- Dynamically builds horizontal bar charts using pure CSS
+- Provides toggles for raw datagrid and SQL code inspection
 
 ---
 
-## Deployment on Render (Recommended)
+## 📊 Database Schema
 
-Since the application requires a persistent Node.js background process to run the Express API server and execute write-independent local SQLite files, **Render** is much more suitable than Vercel. 
-*(Vercel is serverless-based; its serverless functions are ephemeral, read-only, and will lose connections or reset local SQLite database changes).*
+The data pipeline structures beverage operations across **four relational tables**:
 
-We have included a `render.yaml` blueprint. To deploy the app to Render:
-1. Log in to your **Render Dashboard**.
-2. Click **New** → **Blueprint**.
-3. Select your repository `FMCG-Beverages-AI-Assistant`.
-4. Render will automatically build the React frontend, generate the SQLite database via Python, and run the backend.
-5. In the Render environment settings, configure the environment variable:
-   * `GEMINI_API_KEY`: *your_gemini_api_key*
+```mermaid
+erDiagram
+    product_master ||--o{ sales_promotions : "product_id"
+    product_master ||--o{ inventory : "product_id"
+    store_master ||--o{ sales_promotions : "store_id"
+    store_master ||--o{ inventory : "store_id"
+
+    product_master {
+        TEXT product_id PK
+        TEXT product_name
+        TEXT brand
+        TEXT category
+        TEXT sub_category
+        INT pack_size_ml
+        REAL unit_price
+    }
+
+    store_master {
+        TEXT store_id PK
+        TEXT store_name
+        TEXT region
+        TEXT city
+        TEXT store_format
+    }
+
+    sales_promotions {
+        TEXT week_start_date
+        TEXT product_id FK
+        TEXT store_id FK
+        TEXT region
+        INT units_sold
+        REAL revenue
+        INT promotion_flag
+        TEXT promotion_type
+        REAL discount_pct
+    }
+
+    inventory {
+        TEXT week_start_date
+        TEXT product_id FK
+        TEXT store_id FK
+        INT opening_stock
+        INT units_received
+        INT units_sold
+        INT closing_stock
+        INT stockout_flag
+    }
+```
+
+| Table | Type | Records | Description |
+|---|---|---|---|
+| `product_master` | Dimension | 15 | Beverage products across 5 brands and 5 categories |
+| `store_master` | Dimension | 32 | Retail stores across 4 regions, 8 cities, 4 formats |
+| `sales_promotions` | Fact | 7,680 | Weekly product-store transactions with promo details |
+| `inventory` | Fact | 7,680 | Weekly stock levels tracking opening → closing stock flow |
+
+### Data Generation Logic
+- **16 weeks** of simulated data (Jan–Apr 2024)
+- **15 products × 32 stores × 16 weeks** = 7,680 fact records per table
+- **Promotion probability:** 15% of transactions include promotions
+- **Promotion types:** Price Cut, BOGO, Display Feature, Bundle
+- **Stockout simulation:** 8% replenishment delay chance triggers stock-zero events
+- **Inventory model:** `closing_stock = (opening_stock + units_received) - units_sold`
+
+---
+
+## 🌐 Deployment
+
+### Why Render (not Vercel)?
+
+This app requires a **persistent Node.js process** to run the Express API server and maintain the local SQLite database file. Vercel's serverless functions are ephemeral and read-only — they cannot maintain persistent SQLite connections.
+
+### Deploy to Render
+
+A `render.yaml` blueprint is included. To deploy:
+
+1. Push this repository to GitHub
+2. Log in to your [Render Dashboard](https://dashboard.render.com/)
+3. Click **New** → **Blueprint**
+4. Select the `FMCG-Beverages-AI-Assistant` repository
+5. Set the environment variable: `GEMINI_API_KEY` = *your_key*
+6. Render automatically builds the frontend, generates the database, and starts the server
 
 ### Live Deployment
 
 🌐 **Production URL:** [https://fmcg-beverages-ai-assistant.onrender.com](https://fmcg-beverages-ai-assistant.onrender.com)
 
+---
+
+## 📜 Available NPM Scripts
+
+| Command | Description |
+|---|---|
+| `npm install` | Install all dependencies |
+| `npm run generate` | Generate the SQLite database and sample CSVs |
+| `npm run setup` | Install dependencies + generate database (one command) |
+| `npm run dev` | Start Vite frontend dev server (port 3000) |
+| `npm start` | Start Express backend API server (port 5001) |
+| `npm run build` | Build production-ready frontend bundle to `dist/` |
+
+---
+
+## 🔑 API Endpoints
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/api/schema` | Returns the full SQLite DDL schema |
+| `GET` | `/api/overview` | Returns dashboard KPIs and chart data |
+| `POST` | `/api/chat` | Accepts `{message}`, returns `{sql, data, answer, explanation}` |
+
+---
+
+## 📝 License
+
+This project was built as part of an AI Engineering assessment for FMCG category management.

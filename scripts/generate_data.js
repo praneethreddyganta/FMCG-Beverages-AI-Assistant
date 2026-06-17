@@ -5,8 +5,9 @@ import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+const PROJECT_ROOT = path.resolve(__dirname, '..');
 
-const DB_PATH = path.join(__dirname, 'fmcg_beverages.db');
+const DB_PATH = path.join(PROJECT_ROOT, 'fmcg_beverages.db');
 
 // Helper: Random helper functions
 function getRandomInt(min, max) {
@@ -254,7 +255,7 @@ async function main() {
 }
 
 function exportCSV(tableName, headers, data) {
-  const csvPath = path.join(__dirname, `${tableName}_sample.csv`);
+  const csvPath = path.join(PROJECT_ROOT, `${tableName}_sample.csv`);
   const lines = [headers.join(',')];
   // Slice to max 100 rows for sample
   data.slice(0, 100).forEach(row => {

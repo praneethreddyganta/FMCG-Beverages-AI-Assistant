@@ -16,9 +16,10 @@ app.use(cors());
 app.use(express.json());
 
 // Serve static frontend in production
-app.use(express.static(path.join(__dirname, 'dist')));
+const PROJECT_ROOT = path.resolve(__dirname, '..');
+app.use(express.static(path.join(PROJECT_ROOT, 'dist')));
 
-const DB_PATH = path.join(__dirname, 'fmcg_beverages.db');
+const DB_PATH = path.join(PROJECT_ROOT, 'fmcg_beverages.db');
 const db = new sqlite3.Database(DB_PATH, (err) => {
   if (err) {
     console.error('Error connecting to SQLite database:', err.message);
@@ -248,7 +249,7 @@ Please write a highly professional, conversational response summarizing these re
 
 // Fallback to React app router in production
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+  res.sendFile(path.join(PROJECT_ROOT, 'dist', 'index.html'));
 });
 
 const PORT = process.env.PORT || 5001;
